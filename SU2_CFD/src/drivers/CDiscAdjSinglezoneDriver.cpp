@@ -2,7 +2,7 @@
  * \file driver_adjoint_singlezone.cpp
  * \brief The main subroutines for driving adjoint single-zone problems.
  * \author R. Sanchez
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -82,6 +82,22 @@ CDiscAdjSinglezoneDriver::CDiscAdjSinglezoneDriver(char* confFile,
         } else {
           SecondaryVariables = RECORDING::MESH_COORDS;
         }
+        MainSolver = ADJFLOW_SOL;
+        break;
+
+      case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
+
+        if (rank == MASTER_NODE)
+          cout << "Direct iteration: Two-temperature Euler/Navier-Stokes/RANS equation." << endl;
+
+        direct_iteration = CIterationFactory::CreateIteration(MAIN_SOLVER::NEMO_EULER, config);
+        direct_output = COutputFactory::CreateOutput(MAIN_SOLVER::NEMO_EULER, config, nDim);
+
+        MainVariables = RECORDING::SOLUTION_VARIABLES;
+        if (config->GetDeform_Mesh()) {
+          SecondaryVariables = RECORDING::MESH_DEFORM;
+        }
+        else { SecondaryVariables = RECORDING::MESH_COORDS; }
         MainSolver = ADJFLOW_SOL;
         break;
 
@@ -439,6 +455,7 @@ void CDiscAdjSinglezoneDriver::Postprocess() {
     {
         case MAIN_SOLVER::DISC_ADJ_EULER :     case MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES :     case MAIN_SOLVER::DISC_ADJ_RANS :
         case MAIN_SOLVER::DISC_ADJ_INC_EULER : case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES : case MAIN_SOLVER::DISC_ADJ_INC_RANS :
+        case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
         case MAIN_SOLVER::DISC_ADJ_HEAT :
             
             /*--- Compute the geometrical sensitivities ---*/

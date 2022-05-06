@@ -2,7 +2,7 @@
  * \file CMultiGridIntegration.cpp
  * \brief Implementation of the multigrid integration class.
  * \author F. Palacios, T. Economon
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -55,6 +55,8 @@ void CMultiGridIntegration::MultiGrid_Iteration(CGeometry ****geometry,
     case MAIN_SOLVER::DISC_ADJ_FEM_EULER:
     case MAIN_SOLVER::DISC_ADJ_FEM_NS:
     case MAIN_SOLVER::DISC_ADJ_RANS:
+    case MAIN_SOLVER::DISC_ADJ_NEMO_EULER:
+    case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
       direct = true;
       break;
     default:

@@ -2,7 +2,7 @@
  * \file CSolverFactory.cpp
  * \brief Main subroutines for CSolverFactoryclass.
  * \author T. Albring
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -128,6 +128,14 @@ CSolver** CSolverFactory::CreateSolverContainer(MAIN_SOLVER kindMainSolver, CCon
       solver[ADJFLOW_SOL] = CreateSubSolver(SUB_SOLVER_TYPE::DISC_ADJ_FLOW, solver, geometry, config, iMGLevel);
       solver[SPECIES_SOL] = CreateSubSolver(SUB_SOLVER_TYPE::SPECIES, solver, geometry, config, iMGLevel);
       solver[ADJSPECIES_SOL] = CreateSubSolver(SUB_SOLVER_TYPE::DISC_ADJ_SPECIES, solver, geometry, config, iMGLevel);
+      break;
+    case MAIN_SOLVER::DISC_ADJ_NEMO_EULER:
+      solver[FLOW_SOL]    = CreateSubSolver(SUB_SOLVER_TYPE::NEMO_EULER, solver, geometry, config, iMGLevel);
+      solver[ADJFLOW_SOL] = CreateSubSolver(SUB_SOLVER_TYPE::DISC_ADJ_FLOW, solver, geometry, config, iMGLevel);
+      break;
+    case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
+      solver[FLOW_SOL]    = CreateSubSolver(SUB_SOLVER_TYPE::NEMO_NAVIER_STOKES, solver, geometry, config, iMGLevel);
+      solver[ADJFLOW_SOL] = CreateSubSolver(SUB_SOLVER_TYPE::DISC_ADJ_FLOW, solver, geometry, config, iMGLevel);
       break;
     case MAIN_SOLVER::DISC_ADJ_RANS:
       solver[FLOW_SOL]    = CreateSubSolver(SUB_SOLVER_TYPE::NAVIER_STOKES, solver, geometry, config, iMGLevel);

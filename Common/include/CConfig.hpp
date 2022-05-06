@@ -3,7 +3,7 @@
  * \brief All the information about the definition of the physical problem.
  *        The subroutines and functions are in the <i>CConfig.cpp</i> file.
  * \author F. Palacios, T. Economon, B. Tracey
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -3660,6 +3660,7 @@ public:
             case MAIN_SOLVER::NEMO_EULER : case MAIN_SOLVER::NEMO_NAVIER_STOKES:
             case MAIN_SOLVER::DISC_ADJ_INC_EULER: case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_INC_RANS:
             case MAIN_SOLVER::DISC_ADJ_EULER: case MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_RANS:
+            case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
                 return true;
             default:
                 return false;

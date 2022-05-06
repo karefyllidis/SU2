@@ -2,7 +2,7 @@
  * \file COutputFactory.cpp
  * \brief Main subroutines for output solver information
  * \author T. Albring
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -33,6 +33,7 @@
 #include "../../include/output/CAdjElasticityOutput.hpp"
 #include "../../include/output/CFlowCompOutput.hpp"
 #include "../../include/output/CNEMOCompOutput.hpp"
+#include "../../include/output/CAdjNEMOCompOutput.hpp"
 #include "../../include/output/CAdjFlowCompOutput.hpp"
 #include "../../include/output/CFlowCompFEMOutput.hpp"
 #include "../../include/output/CFlowIncOutput.hpp"
@@ -63,6 +64,9 @@ COutput* COutputFactory::CreateOutput(MAIN_SOLVER kindSolver, CConfig* config, i
     case MAIN_SOLVER::DISC_ADJ_EULER: case MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_RANS:
     case MAIN_SOLVER::ADJ_EULER: case MAIN_SOLVER::ADJ_NAVIER_STOKES: case MAIN_SOLVER::ADJ_RANS:
       output = new CAdjFlowCompOutput(config, nDim);
+      break;
+    case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
+      output = new CAdjNEMOCompOutput(config, nDim);
       break;
     case MAIN_SOLVER::DISC_ADJ_INC_EULER: case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_INC_RANS:
       output = new CAdjFlowIncOutput(config, nDim);

@@ -2,7 +2,7 @@
  * \file CDiscAdjDeformationDriver.cpp
  * \brief Headers of the main subroutines for driving the projection of sensitivities.
  * \author T. Economon, H. Kline, R. Sanchez
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -48,7 +48,7 @@
  * \class CDiscAdjDeformationDriver
  * \brief Class for driving sensitivity projections.
  * \author A. Gastaldi, H. Patel
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  */
 class CDiscAdjDeformationDriver : public CDriverBase {
     

@@ -2,7 +2,7 @@
  * \file CDiscAdjMultizoneDriver.cpp
  * \brief The main subroutines for driving adjoint multi-zone problems
  * \author O. Burghardt, P. Gomes, T. Albring, R. Sanchez
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -65,6 +65,10 @@ CDiscAdjMultizoneDriver::CDiscAdjMultizoneDriver(char* confFile, unsigned short 
           direct_iteration[iZone][iInst] =
               CIterationFactory::CreateIteration(MAIN_SOLVER::EULER, config_container[iZone]);
           break;
+        case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
+          direct_iteration[iZone][iInst] = 
+              CIterationFactory::CreateIteration(MAIN_SOLVER::NEMO_EULER, config_container[iZone]);
+          break; 
         case MAIN_SOLVER::DISC_ADJ_INC_EULER:
         case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES:
         case MAIN_SOLVER::DISC_ADJ_INC_RANS:
@@ -93,6 +97,10 @@ CDiscAdjMultizoneDriver::CDiscAdjMultizoneDriver(char* confFile, unsigned short 
       case MAIN_SOLVER::DISC_ADJ_RANS:
         direct_output[iZone] = COutputFactory::CreateOutput(MAIN_SOLVER::EULER, config_container[iZone], nDim);
         break;
+      case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: 
+      case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
+        direct_output[iZone] = COutputFactory::CreateOutput(MAIN_SOLVER::NEMO_EULER, config_container[iZone], nDim);
+        break; 
       case MAIN_SOLVER::DISC_ADJ_INC_EULER:
       case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES:
       case MAIN_SOLVER::DISC_ADJ_INC_RANS:
@@ -696,7 +704,8 @@ void CDiscAdjMultizoneDriver::SetObjFunction(RECORDING kind_recording) {
       case MAIN_SOLVER::DISC_ADJ_INC_EULER:
       case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES:
       case MAIN_SOLVER::DISC_ADJ_INC_RANS:
-
+      case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: 
+      case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
         solvers[FLOW_SOL]->Pressure_Forces(geometry, config);
         solvers[FLOW_SOL]->Momentum_Forces(geometry, config);
         solvers[FLOW_SOL]->Friction_Forces(geometry, config);

@@ -2,7 +2,7 @@
  * \file CNEMOEulerSolver.cpp
  * \brief Headers of the CNEMOEulerSolver class
  * \author S. R. Copeland, F. Palacios, W. Maier, C. Garbacz
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -88,7 +88,7 @@ CNEMOEulerSolver::CNEMOEulerSolver(CGeometry *geometry, CConfig *config,
     filename_ = config->GetFilename(filename_, ".meta", Unst_RestartIter);
 
     /*--- Read and store the restart metadata ---*/
-    Read_SU2_Restart_Metadata(geometry, config, false, filename_);
+    Read_SU2_Restart_Metadata(geometry, config, adjoint, filename_);
 
   }
 
@@ -1421,6 +1421,60 @@ void CNEMOEulerSolver::SetReferenceValues(const CConfig& config) {
 
 }
 
+void CNEMOEulerSolver::Evaluate_ObjFunc(const CConfig *config, CSolver**) {
+
+  unsigned short iMarker_Monitoring, Kind_ObjFunc;
+  su2double Weight_ObjFunc;
+
+  Total_ComboObj = EvaluateCommonObjFunc(*config);
+
+  /*--- Loop over all monitored markers, add to the 'combo' objective ---*/
+
+  if (config->GetFixed_CL_Mode()) {
+    for (iMarker_Monitoring = 0; iMarker_Monitoring < config->GetnMarker_Monitoring(); iMarker_Monitoring++) {
+
+      Weight_ObjFunc = config->GetWeight_ObjFunc(iMarker_Monitoring);
+      Kind_ObjFunc = config->GetKind_ObjFunc(iMarker_Monitoring);
+
+      switch(Kind_ObjFunc) {
+        case DRAG_COEFFICIENT:
+          Total_ComboObj -= Weight_ObjFunc*config->GetdCD_dCL()*(SurfaceCoeff.CL[iMarker_Monitoring]);
+          break;
+        case MOMENT_X_COEFFICIENT:
+          Total_ComboObj -= Weight_ObjFunc*config->GetdCMx_dCL()*(SurfaceCoeff.CL[iMarker_Monitoring]);
+          break;
+        case MOMENT_Y_COEFFICIENT:
+          Total_ComboObj -= Weight_ObjFunc*config->GetdCMy_dCL()*(SurfaceCoeff.CL[iMarker_Monitoring]);
+          break;
+        case MOMENT_Z_COEFFICIENT:
+          Total_ComboObj -= Weight_ObjFunc*config->GetdCMz_dCL()*(SurfaceCoeff.CL[iMarker_Monitoring]);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /*--- The following are not per-surface, and so to avoid that they are
+   double-counted when multiple surfaces are specified, they have been
+   placed outside of the loop above. In addition, multi-objective mode is
+   also disabled for these objective functions (error thrown at start). ---*/
+
+  Weight_ObjFunc = config->GetWeight_ObjFunc(0);
+  Kind_ObjFunc   = config->GetKind_ObjFunc(0);
+
+  switch(Kind_ObjFunc) {
+    case NEARFIELD_PRESSURE:
+      Total_ComboObj+=Weight_ObjFunc*Total_CNearFieldOF;
+      break;
+    case SURFACE_MACH:
+      Total_ComboObj+=Weight_ObjFunc*config->GetSurface_Mach(0);
+      break;
+    default:
+      break;
+  }
+}
+
 void CNEMOEulerSolver::BC_Sym_Plane(CGeometry *geometry, CSolver **solver_container, CNumerics *conv_numerics,
                                     CNumerics *visc_numerics, CConfig *config, unsigned short val_marker) {
 
@@ -2444,4 +2498,16 @@ void CNEMOEulerSolver::BC_Supersonic_Outlet(CGeometry *geometry, CSolver **solve
   /*--- Free locally allocated memory ---*/
   delete [] Normal;
 
+}
+
+void CNEMOEulerSolver::ResetNodeInfty(su2double pressure_inf, const su2double *massfrac_inf, su2double *mvec_inf, su2double temperature_inf,
+                                      su2double temperature_ve_inf, CConfig *config){
+  su2double check_infty;
+  if (node_infty != nullptr) delete node_infty;
+
+  node_infty = new CNEMOEulerVariable(pressure_inf, massfrac_inf, mvec_inf, temperature_inf,
+                                      temperature_ve_inf, 1, nDim, nVar,
+                                      nPrimVar, nPrimVarGrad, config, GetFluidModel());
+
+  check_infty = node_infty->SetPrimVar(0,GetFluidModel());
 }

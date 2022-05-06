@@ -2,7 +2,7 @@
  * \file driver_structure.cpp
  * \brief The main subroutines for driving single or multi-zone problems.
  * \author T. Economon, H. Kline, R. Sanchez, F. Palacios
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -1452,9 +1452,11 @@ void CDriver::Numerics_Preprocessing(CConfig *config, CGeometry **geometry, CSol
             species = (config->GetKind_Species_Model() != SPECIES_MODEL::NONE); break;
             
         case MAIN_SOLVER::NEMO_EULER:
+        case MAIN_SOLVER::DISC_ADJ_NEMO_EULER:
             NEMO_euler = compressible = true; break;
             
         case MAIN_SOLVER::NEMO_NAVIER_STOKES:
+        case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
             NEMO_ns = compressible = true; break;
             
         case MAIN_SOLVER::RANS:
@@ -3145,6 +3147,7 @@ bool CFluidDriver::Monitor(unsigned long ExtIter) {
         case MAIN_SOLVER::ADJ_EULER: case MAIN_SOLVER::ADJ_NAVIER_STOKES: case MAIN_SOLVER::ADJ_RANS:
         case MAIN_SOLVER::DISC_ADJ_EULER: case MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_RANS:
         case MAIN_SOLVER::DISC_ADJ_INC_EULER: case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_INC_RANS:
+        case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
         case MAIN_SOLVER::DISC_ADJ_FEM_EULER: case MAIN_SOLVER::DISC_ADJ_FEM_NS: case MAIN_SOLVER::DISC_ADJ_FEM_RANS:
             StopCalc = integration_container[ZONE_0][INST_0][ADJFLOW_SOL]->GetConvergence(); break;
         default:
@@ -3404,6 +3407,7 @@ bool CTurbomachineryDriver::Monitor(unsigned long ExtIter) {
             break;
         case MAIN_SOLVER::DISC_ADJ_EULER: case MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_RANS:
         case MAIN_SOLVER::DISC_ADJ_INC_EULER: case MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_INC_RANS:
+        case MAIN_SOLVER::DISC_ADJ_NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
         case MAIN_SOLVER::DISC_ADJ_FEM_EULER: case MAIN_SOLVER::DISC_ADJ_FEM_NS: case MAIN_SOLVER::DISC_ADJ_FEM_RANS:
             StopCalc = integration_container[ZONE_0][INST_0][ADJFLOW_SOL]->GetConvergence();
             break;

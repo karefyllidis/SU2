@@ -2,7 +2,7 @@
  * \file CFlowOutput.cpp
  * \brief Common functions for flow output.
  * \author R. Sanchez
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -1845,7 +1845,9 @@ void CFlowOutput::WriteMetaData(const CConfig *config){
 
     if (( config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_EULER ||
           config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES ||
-          config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_RANS )) {
+          config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_RANS ||
+          config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_NEMO_EULER ||
+          config->GetKind_Solver() == MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES )) {
       meta_file << "SENS_AOA=" << GetHistoryFieldValue("SENS_AOA") * PI_NUMBER / 180.0 << endl;
     }
 
@@ -2050,7 +2052,7 @@ void CFlowOutput::WriteForcesBreakdown(const CConfig* config, const CSolver* flo
 
   file << "\n-------------------------------------------------------------------------\n";
   file << "|    ___ _   _ ___                                                      |\n";
-  file << "|   / __| | | |_  )   Release 7.3.0 \"Blackbird\"                         |\n";
+  file << "|   / __| | | |_  )   Release 7.3.1 \"Blackbird\"                         |\n";
   file << "|   \\__ \\ |_| |/ /                                                      |\n";
   file << "|   |___/\\___//___|   Suite (Computational Fluid Dynamics Code)         |\n";
   file << "|                                                                       |\n";

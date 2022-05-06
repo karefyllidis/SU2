@@ -2,7 +2,7 @@
  * \file CNEMOCompOutput.cpp
  * \brief Main subroutines for compressible flow output
  * \author W. Maier, R. Sanchez
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -224,11 +224,11 @@ void CNEMOCompOutput::SetVolumeOutputFields(CConfig *config){
   AddVolumeOutput("ENERGY",       "Energy",     "SOLUTION", "Energy");
   AddVolumeOutput("ENERGY_VE",    "Energy_ve",  "SOLUTION", "Energy_ve");
 
+  SetVolumeOutputFields_ScalarSolution(config);
+
   //Auxiliary variables for post-processment
   for(iSpecies = 0; iSpecies < nSpecies; iSpecies++)
     AddVolumeOutput("MASSFRAC_" + std::to_string(iSpecies),  "MassFrac_" + std::to_string(iSpecies),  "AUXILIARY", "MassFrac_" + std::to_string(iSpecies));
-
-  SetVolumeOutputFields_ScalarSolution(config);
 
   // Grid velocity
   if (gridMovement){

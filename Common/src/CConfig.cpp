@@ -2,7 +2,7 @@
  * \file CConfig.cpp
  * \brief Main file for managing the config file
  * \author F. Palacios, T. Economon, B. Tracey, H. Kline
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -3200,7 +3200,7 @@ void CConfig::SetHeader(SU2_COMPONENT val_software) const{
     if ((iZone == 0) && (rank == MASTER_NODE)){
         cout << endl << "-------------------------------------------------------------------------" << endl;
         cout << "|    ___ _   _ ___                                                      |" << endl;
-        cout << "|   / __| | | |_  )   Release 7.3.0 \"Blackbird\"                         |" << endl;
+        cout << "|   / __| | | |_  )   Release 7.3.1 \"Blackbird\"                         |" << endl;
         cout << "|   \\__ \\ |_| |/ /                                                      |" << endl;
         switch (val_software) {
             case SU2_COMPONENT::SU2_CFD: cout << "|   |___/\\___//___|   Suite (Computational Fluid Dynamics Code)         |" << endl; break;
@@ -5055,6 +5055,12 @@ void CConfig::SetPostprocessing(SU2_COMPONENT val_software, unsigned short val_i
             case MAIN_SOLVER::NAVIER_STOKES:
                 Kind_Solver = MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES;
                 break;
+            case MAIN_SOLVER::NEMO_EULER:
+                Kind_Solver = MAIN_SOLVER::DISC_ADJ_NEMO_EULER;
+                break;
+            case MAIN_SOLVER::NEMO_NAVIER_STOKES:
+                Kind_Solver = MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES;
+                break;
             case MAIN_SOLVER::INC_EULER:
                 Kind_Solver = MAIN_SOLVER::DISC_ADJ_INC_EULER;
                 break;
@@ -5868,14 +5874,14 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
                     if (uq_permute) cout << "Permuting eigenvectors" << endl;
                 }
                 break;
-            case MAIN_SOLVER::NEMO_EULER:
+            case MAIN_SOLVER::NEMO_EULER: case MAIN_SOLVER::DISC_ADJ_NEMO_EULER:
                 if (Kind_Regime == ENUM_REGIME::COMPRESSIBLE) cout << "Compressible two-temperature thermochemical non-equilibrium Euler equations." << endl;
                 if (Kind_FluidModel == SU2_NONEQ){
                     if ((GasModel != "N2") && (GasModel != "AIR-5") && (GasModel != "ARGON"))
                         SU2_MPI::Error("The GAS_MODEL given as input is not valid. Choose one of the options: N2, AIR-5, ARGON.", CURRENT_FUNCTION);
                 }
                 break;
-            case MAIN_SOLVER::NEMO_NAVIER_STOKES:
+            case MAIN_SOLVER::NEMO_NAVIER_STOKES: case MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES:
                 if (Kind_Regime == ENUM_REGIME::COMPRESSIBLE) cout << "Compressible two-temperature thermochemical non-equilibrium Navier-Stokes equations." << endl;
                 if (Kind_FluidModel == SU2_NONEQ){
                     if ((GasModel != "N2") && (GasModel != "AIR-5") && (GasModel != "ARGON"))
@@ -6355,7 +6361,8 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
         if ((Kind_Solver == MAIN_SOLVER::EULER)          || (Kind_Solver == MAIN_SOLVER::NAVIER_STOKES)          || (Kind_Solver == MAIN_SOLVER::RANS) ||
             (Kind_Solver == MAIN_SOLVER::INC_EULER)      || (Kind_Solver == MAIN_SOLVER::INC_NAVIER_STOKES)      || (Kind_Solver == MAIN_SOLVER::INC_RANS) ||
             (Kind_Solver == MAIN_SOLVER::NEMO_EULER)     || (Kind_Solver == MAIN_SOLVER::NEMO_NAVIER_STOKES)     ||
-            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_RANS) ) {
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_RANS) ||
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NEMO_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES) ) {
             
             if (Kind_ConvNumScheme_Flow == SPACE_CENTERED) {
                 if (Kind_Centered_Flow == LAX) {
@@ -6560,7 +6567,8 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
             (Kind_Solver == MAIN_SOLVER::INC_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::INC_RANS) ||
             (Kind_Solver == MAIN_SOLVER::NEMO_NAVIER_STOKES) ||
             (Kind_Solver == MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_INC_RANS) ||
-            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_RANS)) {
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_RANS) ||
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES)) {
             cout << "Average of gradients with correction (viscous flow terms)." << endl;
         }
         
@@ -6667,7 +6675,8 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
             (Kind_Solver == MAIN_SOLVER::NEMO_EULER) || (Kind_Solver == MAIN_SOLVER::NEMO_NAVIER_STOKES) ||
             (Kind_Solver == MAIN_SOLVER::DISC_ADJ_INC_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_INC_RANS) ||
             (Kind_Solver == MAIN_SOLVER::DISC_ADJ_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_RANS) ||
-            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_NS) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_RANS)) {
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_NS) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_FEM_RANS) ||
+            (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NEMO_EULER) || (Kind_Solver == MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES)) {
             switch (Kind_TimeIntScheme_Flow) {
                 case RUNGE_KUTTA_EXPLICIT:
                     cout << "Runge-Kutta explicit method for the flow equations." << endl;

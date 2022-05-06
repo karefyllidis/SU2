@@ -2,7 +2,7 @@
  * \file option_structure.hpp
  * \brief Defines classes for referencing options for easy input in CConfig
  * \author J. Hicken, B. Tracey
- * \version 7.3.0 "Blackbird"
+ * \version 7.3.1 "Blackbird"
  *
  * SU2 Project Website: https://su2code.github.io
  *
@@ -259,6 +259,8 @@ enum class MAIN_SOLVER {
     MULTIPHYSICS,
     NEMO_EULER,                  /*!< \brief Definition of the NEMO Euler solver. */
     NEMO_NAVIER_STOKES,          /*!< \brief Definition of the NEMO NS solver. */
+    DISC_ADJ_NEMO_EULER,         /*!< \brief Definition of the NEMO Euler solver. */
+    DISC_ADJ_NEMO_NAVIER_STOKES,  /*!< \brief Definition of the NEMO NS solver. */
 };
 static const MapType<std::string, MAIN_SOLVER> Solver_Map = {
     MakePair("NONE", MAIN_SOLVER::NONE)
@@ -274,6 +276,8 @@ static const MapType<std::string, MAIN_SOLVER> Solver_Map = {
     MakePair("FEM_LES", MAIN_SOLVER::FEM_LES)
     MakePair("NEMO_EULER",MAIN_SOLVER::NEMO_EULER)
     MakePair("NEMO_NAVIER_STOKES",MAIN_SOLVER::NEMO_NAVIER_STOKES)
+    MakePair("DISC_ADJ_NEMO_EULER", MAIN_SOLVER::DISC_ADJ_NEMO_EULER)
+    MakePair("DISC_ADJ_NEMO_NAVIERSTOKES", MAIN_SOLVER::DISC_ADJ_NEMO_NAVIER_STOKES)
     MakePair("ADJ_EULER", MAIN_SOLVER::ADJ_EULER)
     MakePair("ADJ_NAVIER_STOKES", MAIN_SOLVER::ADJ_NAVIER_STOKES)
     MakePair("ADJ_RANS", MAIN_SOLVER::ADJ_RANS )
